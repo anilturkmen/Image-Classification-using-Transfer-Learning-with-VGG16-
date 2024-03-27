@@ -1,19 +1,25 @@
+"""
 
+@anilturkmen
 
+Before diving into the project, it's important to read the README section. 
+The README contains project details and explanations. If you have any questions, please feel free to contact me.
 
+Thank you!
+
+"""
 import tensorflow
 
-# VGG16 is a pre-trained CNN model.
+# VGG16 stands out as a pre-trained cornerstone in convolutional neural network technology.
 conv_base = tensorflow.keras.applications.VGG16(weights='imagenet',
                                                 include_top=False,
                                                 input_shape=(224, 224, 3)
                                                 )
 
-# Showing the convolutional layers.
+# Displaying the intricate layers of convolutions
 conv_base.summary()
 
-# Deciding which layers are trained and frozen.
-# Until 'block5_conv1' are frozen.
+# Determining the layers to be trained and set as unalterable. Freezing layers until 'block5_conv1'
 conv_base.trainable = True
 set_trainable = False
 for layer in conv_base.layers:
@@ -24,16 +30,16 @@ for layer in conv_base.layers:
     else:
         layer.trainable = False
 
-# An empyty model is created.
+# An empty blueprint for the model is established.
 model = tensorflow.keras.models.Sequential()
 
-# VGG16 is added as convolutional layer.
+# Integrating VGG16 as a foundational convolutional layer.
 model.add(conv_base)
 
-# Layers are converted from matrices to a vector.
+# Transforming layers from matrices into a vector format.
 model.add(tensorflow.keras.layers.Flatten())
 
-# Our neural layer is added.
+# Our neural network layer is incorporated.
 model.add(tensorflow.keras.layers.Dense(256, activation='relu'))
 model.add(tensorflow.keras.layers.Dense(5, activation='softmax'))
 
@@ -41,15 +47,15 @@ model.compile(loss='binary_crossentropy',
               optimizer=tensorflow.keras.optimizers.RMSprop(learning_rate=1e-5),
               metrics=['acc'])
 
-# Showing the created model.
+# Displaying the finalized model architecture.
 model.summary()
 
-# Defining the directories that data are in.
+# Specifying the directories containing the data.
 EGITIM = '/Users/anilturkmen/Desktop/Bitirme_Tezi_Projem/veriseti/EGITIM'
 GECERLEME_YOLU = '/Users/anilturkmen/Desktop/Bitirme_Tezi_Projem/veriseti/GECERLEME'
 TEST = '/Users/anilturkmen/Desktop/Bitirme_Tezi_Projem/veriseti/TEST'
 
-# We need to apply data augmentation methods to prevent overfitting.
+# To mitigate overfitting, data augmentation techniques are applied.
 train_datagen = tensorflow.keras.preprocessing.image.ImageDataGenerator(
     rescale=1. / 255,  # piksel değerleri 0-255'den 0-1 arasına getiriliyor.
     rotation_range=40,  # istenilen artırma işlemleri yapılabilir.
@@ -67,7 +73,7 @@ train_generator = train_datagen.flow_from_directory(
     batch_size=16,
 )
 
-# To validate the training process, we do not need augmented images.
+# For validating the training process, augmented images are not utilized.
 validation_datagen = tensorflow.keras.preprocessing.image.ImageDataGenerator(
     rescale=1. / 255
 )
@@ -78,8 +84,8 @@ validation_generator = validation_datagen.flow_from_directory(
     batch_size=16,
 )
 
-# Training the model.
-# Training the model.
+# Training process commences for the model.
+
 EGITIM_TAKIP = model.fit(
     train_generator,
     steps_per_epoch=10,
@@ -87,10 +93,10 @@ EGITIM_TAKIP = model.fit(
     validation_data=validation_generator,
     validation_steps=1)
 
-# Saving the trained model to working directory.
+# Saving the trained model to the working directory
 model.save('yuzde_doksan12_bessinif.keras')
 
-# To test the trained model, we do not need augmented images.
+# For testing the trained model, augmented images are unnecessary.
 test_datagen = tensorflow.keras.preprocessing.image.ImageDataGenerator(
     rescale=1. / 255
 )
@@ -101,6 +107,6 @@ test_generator = test_datagen.flow_from_directory(
     batch_size=16,
 )
 
-# Printing the test results.
+# Printing out the test results.
 test_loss, test_acc = model.evaluate(test_generator, steps=25)
 print('test acc:', test_acc)
